@@ -6,18 +6,18 @@ function Question({ question, onAnswered }) {
   // add useEffect code
   useEffect (() => {
     const timer = setTimeout(() => {
-      if (timeRemaining > 0) {
+      // Check greater than 1.  This is due to the fact that the timeRemaining does not get updated
+      // until after the rendering.  Thus an "off by 1" issue
+      if (timeRemaining > 1) {
         setTimeRemaining(timeRemaining - 1)
       } else {
         // The contestant did not answer in time.  Set up the time for the next question.
-        setTimeRemaining(10)
         onAnswered(false)
+        setTimeRemaining(10)
       }
     }, 1000)
-    return function cleanup() {
-      console.log("Cleanup")
-      clearTimeout(timer)
-    }
+    return () => (clearTimeout(timer))
+    
   }, [timeRemaining])
 
   function handleAnswer(isCorrect) {
